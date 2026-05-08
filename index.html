@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="description" content="Elevo — Multilevel Language Platform" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#09090b" />
+        <meta name="color-scheme" content="light dark" />
+
+        <!-- Lexend font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&display=swap" rel="stylesheet" />
+
+        <!-- FOUC prevention — runs before first paint -->
+        <script>
+            try {
+                var t = localStorage.getItem("elevo-theme");
+                if (!t) {
+                    // Default to light mode
+                    t = "light";
+                }
+                document.documentElement.classList.add(t === "dark" ? "dark-mode" : "light-mode");
+            } catch(e) {
+                // Fallback to light mode on error
+                document.documentElement.classList.add("light-mode");
+            }
+        </script>
+
+        <!-- Telegram WebApp SDK — before app loads so fullscreen works -->
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script>
+            try {
+                var tg = window.Telegram?.WebApp;
+                if (tg) {
+                    tg.ready();
+                    tg.expand();
+                    if (tg.requestFullscreen) tg.requestFullscreen();
+                    if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+                    if (tg.setHeaderColor) tg.setHeaderColor("bg_color");
+                }
+            } catch(e) {}
+        </script>
+
+        <title>Elevo</title>
+    </head>
+
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>
