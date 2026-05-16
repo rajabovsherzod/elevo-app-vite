@@ -1,3 +1,4 @@
+
 import type { ComponentPropsWithRef, FC, ReactNode } from "react";
 import { createContext, isValidElement, useContext } from "react";
 import type { TabListProps as AriaTabListProps, TabProps as AriaTabProps, TabRenderProps as AriaTabRenderProps } from "react-aria-components";
@@ -78,7 +79,6 @@ const getHorizontalStyles = ({ size, fullWidth }: { size?: "sm" | "md"; fullWidt
     underline: cx("gap-3", fullWidth && "w-full gap-4"),
     line: "gap-2",
 });
-
 
 interface TabListComponentProps<T extends object, K extends Orientation> extends Omit<AriaTabListProps<T>, "items"> {
     /** The size of the tab list. */

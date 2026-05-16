@@ -491,6 +491,22 @@
     }
 }
 
+/* ── Exam Loading Spinner ─────────────────────────────────────────────────── */
+@keyframes exam-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes calculating-dot {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40%           { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes calculating-fade {
+    0%, 100% { opacity: 0; transform: translateY(4px); }
+    20%, 70% { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Page Transitions — template.tsx remount triggers this on every navigation ── */
 
 @keyframes page-enter {

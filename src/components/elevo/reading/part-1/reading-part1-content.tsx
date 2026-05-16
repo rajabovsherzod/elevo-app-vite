@@ -1,0 +1,121 @@
+import { useMemo } from "react"
+import { useNavigate } from "react-router"
+import { Button } from "@/components/base/buttons/button"
+import { ExamLoading } from "@/components/elevo/shared/exam-loading"
+import { ExamTimer } from "@/components/elevo/shared/exam-timer"
+import { CalculatingResults } from "@/components/elevo/shared/calculating-results"
+import { ErrorCard } from "@/components/elevo/shared/error-card"
+import { useReadingPart1 } from "@/hooks/reading/part-1/use-reading-part1"
+import { ReadingPart1Text } from "./reading-part1-text"
+import { ReadingPart1Result } from "./reading-part1-result"
+import { ReadingPart1ReviewAccordion } from "./reading-part1-review-accordion"
+
+export function ReadingPart1Content() {
+  const navigate = useNavigate()
+  const {
+    loading,
+    submitting,
+    questionData,
+    answers,
+    result,
+    timeLeft,
+    error,
+    allFilled,
+    formatTime,
+    handleAnswerChange,
+    handleSubmit,
+    retry,
+  } = useReadingPart1()
+
+  const showTimer = useMemo(
+    () => !loading && !error && !submitting && !result,
+    [loading, error, submitting, result]
+  )
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <ExamLoading />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <ErrorCard
+        error={error}
+        onRetry={retry}
+        onBack={() => navigate(-1)}
+      />
+    )
+  }
+
+  if (submitting) {
+    return <CalculatingResults />
+  }
+
+  if (!questionData) {
+    return (
+      <div className="elevo-card elevo-card-border p-8 flex flex-col items-center gap-3 text-center">
+        <p className="text-sm font-semibold text-on-surface-variant">
+          No question found. Try again later.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-5 animate-fade-in">
+      {showTimer && (
+        <div className="fixed top-4 right-4 z-50">
+          <ExamTimer timeLeft={timeLeft} formatTime={formatTime} />
+        </div>
+      )}
+
+      {!result && (
+        <div className="elevo-card elevo-card-border p-5 flex flex-col gap-4">
+          {questionData?.title && (
+            <h2 className="text-sm font-bold text-on-surface">{questionData.title}</h2>
+          )}
+          {questionData?.instruction && (
+            <p className="text-xs text-on-surface-variant">{questionData.instruction}</p>
+          )}
+
+          <div
+            className="rounded-xl p-4 elevo-card-border"
+            style={{ background: "color-mix(in srgb, currentColor 3%, transparent)" }}
+          >
+            <ReadingPart1Text
+              text={questionData?.text || ""}
+              positions={questionData?.positions || []}
+              answers={answers}
+              onAnswerChange={handleAnswerChange}
+              result={result}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              size="md"
+              color="primary"
+              onClick={handleSubmit}
+              isLoading={submitting}
+              isDisabled={!allFilled || submitting}
+            >
+              Submit Answers
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <>
+          <ReadingPart1Result result={result} />
+          {questionData && (
+            <ReadingPart1ReviewAccordion questionData={questionData} result={result} />
+          )}
+        </>
+      )}
+    </div>
+  )
+}

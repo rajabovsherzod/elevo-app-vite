@@ -17,6 +17,7 @@ export {
   // Navigation & Layout
   Home,
   ArrowLeft,
+  ArrowRight,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -90,7 +91,8 @@ export {
   HelpCircle,
   LogOut,
   Shield,
-  
+  Lock, // Used in need-paid component
+
   // Actions
   Copy,
   Send,

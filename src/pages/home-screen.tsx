@@ -3,19 +3,28 @@ import { ProgressCard }  from "@/components/elevo/dashboard/progress-card";
 import { ExamStats }     from "@/components/elevo/dashboard/exam-stats";
 import { QuickPractice } from "@/components/elevo/dashboard/quick-practice";
 import { DebugPanel }    from "@/components/elevo/debug-panel";
+import { useAuthStore }  from "@/store/auth.store";
+import { getDisplayName } from "@/types/auth.types";
 
 export function HomeScreen() {
+    const user = useAuthStore((s) => s.user);
+
+    const displayName = getDisplayName(user);
+    const level  = "B1";
+    const streak = user?.streak  ?? 0;
+    const xp     = user?.xp      ?? 0;
+
     return (
         <div className="flex flex-col gap-5 relative z-10">
             <WelcomeCard
-                name="Foydalanuvchi"
-                level="B1"
-                streak={0}
-                xp={0}
+                name={displayName}
+                level={level}
+                streak={streak}
+                xp={xp}
             />
 
             <ProgressCard
-                level="B1"
+                level={level}
                 progress={0}
                 questionsAnswered={0}
                 accuracy={0}

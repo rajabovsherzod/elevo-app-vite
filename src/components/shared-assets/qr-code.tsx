@@ -1,3 +1,4 @@
+
 import type { HTMLAttributes } from "react";
 import { useEffect, useRef, useState } from "react";
 import QRCodeStyling, { type Options as QRCodeStylingOptions } from "qr-code-styling";
