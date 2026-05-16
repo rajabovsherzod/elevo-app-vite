@@ -9,40 +9,90 @@
         <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#09090b" />
         <meta name="color-scheme" content="light dark" />
 
-        <!-- Lexend font -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&display=swap" rel="stylesheet" />
-
-        <!-- FOUC prevention — runs before first paint -->
+        <!-- FOUC prevention — runs before first paint, sets theme class + bg instantly -->
         <script>
             try {
                 var t = localStorage.getItem("elevo-theme");
-                if (!t) {
-                    // Default to light mode
-                    t = "light";
-                }
-                document.documentElement.classList.add(t === "dark" ? "dark-mode" : "light-mode");
+                var isDark = t === "dark";
+                document.documentElement.classList.add(isDark ? "dark-mode" : "light-mode");
+                var _bg = isDark ? "#09090b" : "#f8fafc";
+                document.documentElement.style.background = _bg;
+                document.documentElement.style.backgroundColor = _bg;
             } catch(e) {
-                // Fallback to light mode on error
                 document.documentElement.classList.add("light-mode");
             }
         </script>
 
-        <!-- Telegram WebApp SDK — before app loads so fullscreen works -->
-        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <!-- Critical CSS: background color before any bundle loads — eliminates black flash -->
+        <style>
+            html, body {
+                margin: 0; padding: 0;
+                background-color: #f8fafc;
+                height: 100%; min-height: 100dvh;
+            }
+            .dark-mode, .dark-mode body { background-color: #09090b; }
+            #root { min-height: 100dvh; background-color: inherit; }
+        </style>
+
+        <!-- Lexend font — display=swap keeps it non-blocking -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&display=swap" rel="stylesheet" />
+
+        <!-- Telegram fullscreen init — sync inline script, runs BEFORE React renders.
+             In Telegram Mini App, window.Telegram.WebApp is pre-injected by Telegram
+             BEFORE any script runs, so this fires immediately at parse time. -->
         <script>
-            try {
-                var tg = window.Telegram?.WebApp;
+            (function() {
+                var isDarkMode = document.documentElement.classList.contains("dark-mode");
+                var bgColor = isDarkMode ? "#09090b" : "#f8fafc";
+
+                function initTg(tg) {
+                    try {
+                        tg.ready();
+                        if (typeof tg.disableVerticalSwipes === "function") tg.disableVerticalSwipes();
+                        if (typeof tg.setHeaderColor === "function") tg.setHeaderColor("bg_color");
+                        if (typeof tg.setBackgroundColor === "function") tg.setBackgroundColor(bgColor);
+                        if (typeof tg.setBottomBarColor === "function") tg.setBottomBarColor(bgColor);
+                        if (typeof tg.requestFullscreen === "function" && !tg.isFullscreen) {
+                            tg.requestFullscreen();
+                        } else if (typeof tg.expand === "function") {
+                            tg.expand();
+                        }
+                    } catch(e) {}
+                }
+
+                var tg = window.Telegram && window.Telegram.WebApp;
                 if (tg) {
+                    initTg(tg);
+                } else {
+                    // SDK async yuklanganda retry (browser dev yoki SDK kech kelsa)
+                    window.__tgInitPending = { bgColor: bgColor };
+                }
+            })();
+        </script>
+
+        <!-- Telegram WebApp SDK — async, only needed for browser dev testing.
+             In real Telegram app the SDK is already pre-injected above. -->
+        <script async src="https://telegram.org/js/telegram-web-app.js" onload="
+            try {
+                var pending = window.__tgInitPending;
+                var tg = window.Telegram && window.Telegram.WebApp;
+                if (tg && pending) {
                     tg.ready();
-                    tg.expand();
-                    if (tg.requestFullscreen) tg.requestFullscreen();
-                    if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
-                    if (tg.setHeaderColor) tg.setHeaderColor("bg_color");
+                    if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
+                    if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor('bg_color');
+                    if (typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor(pending.bgColor);
+                    if (typeof tg.setBottomBarColor === 'function') tg.setBottomBarColor(pending.bgColor);
+                    if (typeof tg.requestFullscreen === 'function' && !tg.isFullscreen) {
+                        tg.requestFullscreen();
+                    } else if (typeof tg.expand === 'function') {
+                        tg.expand();
+                    }
+                    window.__tgInitPending = null;
                 }
             } catch(e) {}
-        </script>
+        "></script>
 
         <title>Elevo</title>
     </head>

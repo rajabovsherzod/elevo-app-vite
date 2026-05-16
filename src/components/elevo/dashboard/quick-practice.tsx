@@ -23,14 +23,15 @@ const PRACTICE_ITEMS: PracticeItem[] = [
 function PracticeButton({ item }: { item: PracticeItem }) {
   const Icon = item.icon
   return (
-    <Link
-      to={item.href}
+    <Link to={item.href}
       className="group elevo-card-hover elevo-card-border flex flex-col items-start p-5"
     >
+      {/* Icon */}
       <div className="w-11 h-11 bg-primary/10 border border-primary/15 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110">
         <Icon className="w-5 h-5 text-primary" aria-hidden />
       </div>
 
+      {/* Text */}
       <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors leading-none mb-1">
         {item.title}
       </span>
