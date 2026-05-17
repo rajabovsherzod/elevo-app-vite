@@ -5,6 +5,7 @@ import { API_BASE } from "@/lib/api/endpoints";
 import { useAuthStore } from "@/store/auth.store";
 import { getAccessToken } from "@/lib/api/client";
 
+const API_BASE = import.meta.env.VITE_API_URL ?? "";
 const MODAL_STORAGE_PREFIX = "elevo_welcomed_v1";
 
 export function DebugPanel() {
@@ -123,18 +124,18 @@ export function DebugPanel() {
   return (
     <div className="mt-8 p-4 bg-surface-container rounded-xl border border-error/30 text-xs overflow-hidden break-words mb-20">
       <h3 className="font-bold text-error mb-2 text-sm uppercase">DEBUG PANEL (DEV)</h3>
-      
+
       <div className="space-y-3">
         <div>
           <span className="font-bold">Backend API URL:</span>
           <code className="block bg-background p-2 rounded mt-1 select-all">{API_BASE}</code>
         </div>
-        
+
         <div>
           <span className="font-bold">Telegram initData:</span>
           <code className="block bg-background p-2 rounded mt-1 text-warning">{initData}</code>
         </div>
-        
+
         {tgUser && (
           <div>
             <span className="font-bold">Telegram User (Unsafe):</span>
@@ -189,7 +190,7 @@ export function DebugPanel() {
         <div>
           <span className="font-bold">Backend Aloqa:</span>
           <code className="block bg-background p-2 rounded mt-1 text-primary">{backendStatus}</code>
-          <button 
+          <button
             onClick={pingBackend}
             className="mt-2 bg-primary/20 text-primary px-3 py-1 rounded font-bold"
           >

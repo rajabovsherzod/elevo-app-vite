@@ -10,6 +10,11 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
+    server: {
+        // Cloudflare tunnel va boshqa tashqi hostlarga ruxsat berish (Django ALLOWED_HOSTS=['*'] kabi)
+        allowedHosts: true,
+        host: true,
+    },
     optimizeDeps: {
         include: ["lottie-web"],
     },
