@@ -9,9 +9,25 @@ export const ENDPOINTS = {
     welcomed:  "/api/auth/welcomed/",
   },
   speaking: {
-    evaluate: "/api/multilevel/speaking/evaluate/",
     part1_1: {
-      question: "/api/multilevel/speaking/part1_1/question/",
+      question: (examId: number) => `/api/multilevel/${examId}/speaking/part1-1/question/`,
+      evaluate: (examId: number) => `/api/multilevel/${examId}/speaking/part1-1/evaluate/`,
+    },
+    part1_2: {
+      question: (examId: number) => `/api/multilevel/${examId}/speaking/part1-2/question/`,
+      evaluate: (examId: number) => `/api/multilevel/${examId}/speaking/part1-2/evaluate/`,
+    },
+    part2: {
+      question: (examId: number) => `/api/multilevel/${examId}/speaking/part2/question/`,
+      evaluate: (examId: number, partId: number) => `/api/multilevel/${examId}/speaking/part2/${partId}/evaluate/`,
+    },
+    part3: {
+      question: (examId: number) => `/api/multilevel/${examId}/speaking/part3/question/`,
+      evaluate: (examId: number) => `/api/multilevel/${examId}/speaking/part3/evaluate/`,
+    },
+    mock: {
+      question: (examId: number) => `/api/multilevel/${examId}/speaking/mock/`,
+      evaluate: (examId: number) => `/api/multilevel/${examId}/speaking/mock/evaluate/`,
     },
   },
   writing: {

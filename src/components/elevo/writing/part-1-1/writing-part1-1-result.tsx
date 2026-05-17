@@ -2,7 +2,7 @@ import { memo, useState } from "react"
 import { motion } from "framer-motion"
 import { cx } from "@/utils/cx"
 import { Button } from "@/components/base/buttons/button"
-import type { WritingEvaluateResponse, WritingResult, WritingCefr } from "@/lib/api/writing"
+import type { WritingEvaluateResponse, WritingResult, WritingCefr, WritingImprovedVersion } from "@/lib/api/writing"
 
 const CEFR_CONFIG: Record<WritingCefr, { label: string; color: string; bg: string }> = {
   C1:        { label: "C1",        color: "text-emerald-600", bg: "bg-emerald-500/10" },
@@ -48,6 +48,11 @@ export function WritingPart1_1Result({ response, onRetry }: WritingPart1_1Result
 
       {/* Feedback */}
       <FeedbackCard result={result} />
+
+      {/* Improved versions */}
+      {result.improved_versions && (
+        <ImprovedVersionsCard versions={result.improved_versions} />
+      )}
 
       {/* Retry */}
       <div className="flex justify-center pt-2">
@@ -194,6 +199,92 @@ const FeedbackCard = memo(function FeedbackCard({ result }: { result: WritingRes
             </p>
           </div>
         ))}
+      </div>
+    </div>
+  )
+})
+
+// ── Improved Versions ─────────────────────────────────────────────────────────
+
+const IMPROVED_LEVELS = [
+  { key: "b2" as const, label: "B2", color: "text-indigo-600", bg: "bg-indigo-500/8", border: "border-indigo-500/20", dot: "bg-indigo-500" },
+  { key: "c1" as const, label: "C1", color: "text-emerald-600", bg: "bg-emerald-500/8", border: "border-emerald-500/20", dot: "bg-emerald-500" },
+]
+
+const ImprovedVersionCard = memo(function ImprovedVersionCard({
+  version,
+  label,
+  color,
+  bg,
+  border,
+  dot,
+}: {
+  version: WritingImprovedVersion
+  label: string
+  color: string
+  bg: string
+  border: string
+  dot: string
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const isLong = version.text.length > 240
+
+  return (
+    <div className={cx("rounded-xl p-4 flex flex-col gap-2 border", bg, border)}>
+      <div className="flex items-center gap-2">
+        <span className={cx("w-2 h-2 rounded-full shrink-0", dot)} />
+        <p className={cx("text-xs font-bold leading-none", color)}>{label} Darajasi</p>
+      </div>
+      <p className="text-sm text-on-surface-variant leading-relaxed">
+        {isLong && !expanded ? `${version.text.slice(0, 240)}…` : version.text}
+      </p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className={cx("text-[11px] font-bold self-start", color)}
+        >
+          {expanded ? "Yig'ish" : "To'liq ko'rish"}
+        </button>
+      )}
+      {version.level_rationale && (
+        <p className="text-[11px] text-on-surface-variant/60 italic border-t border-current/10 pt-2 mt-1">
+          {version.level_rationale}
+        </p>
+      )}
+    </div>
+  )
+})
+
+const ImprovedVersionsCard = memo(function ImprovedVersionsCard({
+  versions,
+}: {
+  versions: NonNullable<WritingResult["improved_versions"]>
+}) {
+  return (
+    <div className="elevo-card elevo-card-border overflow-hidden">
+      <div className="px-4 py-3 bg-amber-500/10 flex items-center gap-2">
+        <span className="text-amber-500 text-sm">✦</span>
+        <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">
+          AI Yaxshilangan Versiyalar
+        </p>
+      </div>
+      <p className="px-4 pt-3 pb-1 text-[12px] text-on-surface-variant/70">
+        Sizning javobingiz B2 va C1 darajasida qayta yozilgan namunalar
+      </p>
+      <div className="p-4 flex flex-col gap-3">
+        {IMPROVED_LEVELS.map(({ key, label, color, bg, border, dot }) =>
+          versions[key]?.text ? (
+            <ImprovedVersionCard
+              key={key}
+              version={versions[key]}
+              label={label}
+              color={color}
+              bg={bg}
+              border={border}
+              dot={dot}
+            />
+          ) : null
+        )}
       </div>
     </div>
   )

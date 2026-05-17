@@ -21,7 +21,7 @@ export const useCurrentUser = () => {
     // Fresh on every app boot — global_quota changes daily, trial state matters at startup
     staleTime: 0,
     refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     retry: 1,
   });
 

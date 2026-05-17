@@ -24,6 +24,11 @@ export interface WritingBilingual {
   en: string
 }
 
+export interface WritingImprovedVersion {
+  text: string
+  level_rationale: string
+}
+
 export interface WritingResult {
   is_off_topic: boolean
   task_type: string
@@ -39,6 +44,10 @@ export interface WritingResult {
     strengths: WritingBilingual
     weaknesses: WritingBilingual
     improvements: WritingBilingual
+  }
+  improved_versions?: {
+    b2: WritingImprovedVersion
+    c1: WritingImprovedVersion
   }
 }
 

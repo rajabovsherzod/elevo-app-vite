@@ -1,157 +1,126 @@
-/* ═══════════════════════════════════════
-   Speaking Page — IELTS Speaking practice
-   Full Mock + 4 Parts (1.1, 1.2, 2, 3)
-   ═══════════════════════════════════════ */
-
-
 import { Link } from "react-router"
 import { PageHeader } from "@/components/elevo/shared/page-header"
-import { Mic, Play, Clock, MessageSquare, Users, Lightbulb, type LucideIcon } from "@/lib/icons"
+import { Mic, Play, Clock, MessageSquare, Users, Lightbulb, ChevronRight, type LucideIcon } from "@/lib/icons"
+
+const PARTS = [
+  {
+    id: "1.1",
+    title: "Introduction",
+    description: "Qisqa tanishuv savollari",
+    level: "B1",
+    levelColor: "#f59e0b",
+    icon: MessageSquare,
+    href: "/speaking/part-1-1",
+    duration: "1.5 min",
+  },
+  {
+    id: "1.2",
+    title: "Familiar Topics",
+    description: "Rasm tavsifi va follow-up savollar",
+    level: "B1–B2",
+    levelColor: "#6366f1",
+    icon: Users,
+    href: "/speaking/part-1-2",
+    duration: "1.5 min",
+  },
+  {
+    id: "2",
+    title: "Long Turn",
+    description: "Uzun monolog — 2 daqiqa",
+    level: "B2",
+    levelColor: "#6366f1",
+    icon: Clock,
+    href: "/speaking/part-2",
+    duration: "2 min",
+  },
+  {
+    id: "3",
+    title: "Discussion",
+    description: "Mavzu bo'yicha fikr almashish",
+    level: "B2–C1",
+    levelColor: "#10b981",
+    icon: Lightbulb,
+    href: "/speaking/part-3",
+    duration: "3 min",
+  },
+]
 
 export default function SpeakingPage() {
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader
-        title="Speaking Practice"
-        subtitle="Nutq ko'nikmalarini rivojlantiring"
-        icon={Mic}
-      />
+    <div className="flex flex-col gap-5 pb-6">
+      <PageHeader title="Speaking" icon={Mic} />
 
-      <FullMockCard />
+      {/* Full Mock */}
+      <Link
+        to="/speaking/full-mock"
+        className="elevo-card elevo-card-border p-5 flex items-center gap-4 active:scale-[0.98] transition-transform"
+      >
+        <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
+          <Play className="w-6 h-6 text-primary fill-primary/30" strokeWidth={1.8} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-0.5">
+            To'liq test · 11 min
+          </p>
+          <p className="text-[16px] font-bold text-on-surface">Full Mock Test</p>
+        </div>
+        <ChevronRight className="w-5 h-5 text-on-surface-variant/40 shrink-0" />
+      </Link>
 
-      <div className="grid grid-cols-2 gap-4">
-        <PartCard
-          part="Part 1.1"
-          title="Introduction"
-          duration="2 min"
-          icon={MessageSquare}
-          color="#6366f1"
-          href="/speaking/part-1-1"
-        />
-        <PartCard
-          part="Part 1.2"
-          title="Familiar Topics"
-          duration="2 min"
-          icon={Users}
-          color="#8b5cf6"
-          href="/speaking/part-1-2"
-        />
-        <PartCard
-          part="Part 2"
-          title="Long Turn"
-          duration="3 min"
-          icon={Clock}
-          color="#ec4899"
-          href="/speaking/part-2"
-        />
-        <PartCard
-          part="Part 3"
-          title="Discussion"
-          duration="3 min"
-          icon={Lightbulb}
-          color="#f59e0b"
-          href="/speaking/part-3"
-        />
+      {/* Parts */}
+      <div>
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant px-1 mb-3">
+          Parts
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {PARTS.map((part) => (
+            <SpeakingPartCard key={part.id} {...part} />
+          ))}
+        </div>
       </div>
     </div>
   )
 }
 
-/* ── Full Mock Card ─────────────────────────────────────────── */
-
-function FullMockCard() {
-  return (
-    <Link
-      href="/speaking/full-mock"
-      className="group relative elevo-card-hover p-6 overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
-      <div className="absolute -right-8 -top-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
-
-      <div className="relative z-10 flex items-center justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-primary/15 border border-primary/25 rounded-lg flex items-center justify-center">
-              <Play className="w-4 h-4 text-primary fill-primary" aria-hidden />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.15em] text-primary">
-              Full Test
-            </span>
-          </div>
-
-          <h2 className="text-xl font-extrabold text-on-surface mb-1 leading-tight group-hover:text-primary transition-colors">
-            Full Mock Test
-          </h2>
-          <p className="text-sm text-on-surface-variant leading-relaxed">
-            To&apos;liq Speaking mashg&apos;uloti (11 daqiqa)
-          </p>
-
-          <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-on-surface-variant" aria-hidden />
-              <span className="text-xs font-medium text-on-surface-variant">11 min</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Mic className="w-4 h-4 text-on-surface-variant" aria-hidden />
-              <span className="text-xs font-medium text-on-surface-variant">AI Tutor</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="shrink-0 w-20 h-20 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-          <Mic className="w-10 h-10 text-primary" strokeWidth={2} aria-hidden />
-        </div>
-      </div>
-    </Link>
-  )
-}
-
-/* ── Part Card ──────────────────────────────────────────────── */
-
-interface PartCardProps {
-  part: string
+interface SpeakingPartCardProps {
+  id: string
   title: string
-  duration: string
+  description: string
+  level: string
+  levelColor: string
   icon: LucideIcon
-  color: string
   href: string
+  duration: string
 }
 
-function PartCard({ part, title, duration, icon: Icon, color, href }: PartCardProps) {
+function SpeakingPartCard({ id, title, description, level, levelColor, icon: Icon, href }: SpeakingPartCardProps) {
   return (
     <Link
-      href={href}
-      prefetch={true}
-      className="group elevo-card-hover p-5 flex flex-col"
-      style={{ ['--part-color' as string]: color }}
+      to={href}
+      className="elevo-card elevo-card-border p-4 flex flex-col gap-3 active:scale-[0.97] transition-transform"
     >
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
-        style={{
-          backgroundColor: `color-mix(in srgb, var(--part-color) 8%, transparent)`,
-          borderWidth: 1,
-          borderColor: `color-mix(in srgb, var(--part-color) 15%, transparent)`,
-        }}
-      >
-        <Icon
-          className="w-6 h-6"
-          style={{ color: 'var(--part-color)' }}
-          strokeWidth={2}
-          aria-hidden
-        />
+      <div className="flex items-start justify-between">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/15 flex items-center justify-center">
+          <Icon className="w-5 h-5 text-primary" strokeWidth={1.8} />
+        </div>
+        <span
+          className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+          style={{
+            color: levelColor,
+            background: `color-mix(in srgb, ${levelColor} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${levelColor} 20%, transparent)`,
+          }}
+        >
+          {level}
+        </span>
       </div>
 
-      <div className="flex-1">
-        <span className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant mb-1 block">
-          {part}
-        </span>
-        <h3 className="text-sm font-bold text-on-surface mb-1 leading-tight group-hover:text-primary transition-colors">
-          {title}
-        </h3>
-        <div className="flex items-center gap-1.5 mt-2">
-          <Clock className="w-3.5 h-3.5 text-on-surface-variant" aria-hidden />
-          <span className="text-xs text-on-surface-variant">{duration}</span>
-        </div>
+      <div>
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
+          Part {id}
+        </p>
+        <p className="text-[14px] font-bold text-on-surface leading-snug">{title}</p>
+        <p className="text-[11px] text-on-surface-variant mt-1 leading-snug">{description}</p>
       </div>
     </Link>
   )

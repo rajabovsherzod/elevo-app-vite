@@ -27,6 +27,7 @@ export {
   BookOpen,
   Headphones,
   Mic,
+  MicOff,
   Mic2,
   PenLine,
   FileText,

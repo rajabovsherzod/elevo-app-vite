@@ -26,6 +26,21 @@ const SPLASH_MIN_MS = 2000;
 const SPLASH_MAX_MS = 6000;
 const EXIT_MS       = 420;   // smooth fade-out duration
 
+// ── Warm-start detection ──────────────────────────────────────────
+// If the user already has a cached session, skip the splash entirely.
+// Returning users (app reload / Telegram WebView wake) should see
+// their content immediately — the brand animation is for first boot only.
+const _warmStart = (() => {
+  try {
+    const raw = localStorage.getItem("elevo-auth");
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    return !!(parsed?.state?.user && parsed?.state?.isAuthenticated);
+  } catch {
+    return false;
+  }
+})();
+
 // ── Context (used by useAppReady) ─────────────────────────────────
 const SplashDoneContext = createContext(false);
 export function useSplashDone() {
@@ -85,12 +100,12 @@ function BootErrorScreen() {
 
 // ── Provider ─────────────────────────────────────────────────────
 export function SplashProvider({ children }: { children: React.ReactNode }) {
-  const [minPassed,     setMinPassed]     = useState(false);
+  const [minPassed,     setMinPassed]     = useState(_warmStart);
   const [timedOut,      setTimedOut]      = useState(false);
-  const [splashMounted, setSplashMounted] = useState(true);
+  const [splashMounted, setSplashMounted] = useState(!_warmStart);
   const [exiting,       setExiting]       = useState(false);
-  const [contentVisible,setContentVisible]= useState(false);
-  const [splashDone,    setSplashDone]    = useState(false);
+  const [contentVisible,setContentVisible]= useState(_warmStart);
+  const [splashDone,    setSplashDone]    = useState(_warmStart);
 
   // ── Eager /auth/me fetch ──────────────────────────────────────
   // This MUST be called at top level so fresh user data (including
